@@ -1,0 +1,15 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.filter" >
+    <uses-permission android:name="android.permission.INTERNET" />
+    <application>
+        <activity android:name=".view.ui.ProductActivity"
+            android:label="@string/filter">
+        </activity>
+        <activity android:name=".view.FilterActivity"
+            android:label="@string/filter"/>
+        <activity android:name=".view.ui.FilterCaseActivity"
+            android:label="@string/filter"/>
+    </application>
+
+</manifest>
+

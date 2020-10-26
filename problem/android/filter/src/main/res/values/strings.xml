@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="filter">Filter</string>
+    <string name="sort">Urutkan</string>
+    <string name="location">Lokasi</string>
+    <string name="price">Harga</string>
+    <string name="minimum_price">Harga Minimum</string>
+    <string name="maximum_price">Harga Maximum</string>
+</resources>

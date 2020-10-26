@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cv_language"
+    android:layout_width="@dimen/dp_140"
+    android:layout_height="@dimen/dp_300"
+    android:layout_margin="@dimen/dp_10"
+    app:cardCornerRadius="@dimen/dp_6">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/dp_6">
+
+        <ImageView
+            android:id="@+id/iv_picture"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_160"
+            android:src="@drawable/googleg_disabled_color_18"/>
+
+        <TextView
+            android:id="@+id/tv_product_name"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_40"
+            android:layout_marginTop="@dimen/dp_8"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:text="Name"
+            android:textColor="@color/colorBlack"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            android:text="@string/price"
+            android:textColor="@color/colorDarkOrange"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/tv_city"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            android:maxLines="1"
+            android:text="City"/>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

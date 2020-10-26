@@ -1,0 +1,10 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/module.gradle"
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+dependencies {
+    implementation 'androidx.legacy:legacy-support-v4:+'
+    implementation 'com.google.android.material:material:+'
+    implementation 'androidx.recyclerview:recyclerview:+'
+}
