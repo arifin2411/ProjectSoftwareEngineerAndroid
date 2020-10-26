@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.filter.view.data.ProductRepository
-import com.tokopedia.filter.view.ui.entity.Product
+import com.tokopedia.filter.view.data.entity.Product
 import com.tokopedia.filter.view.utils.Resource
 import com.tokopedia.filter.view.utils.setError
 import com.tokopedia.filter.view.utils.setLoading

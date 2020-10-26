@@ -9,7 +9,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.filter.R
-import com.tokopedia.filter.view.ui.entity.Product
+import com.tokopedia.filter.view.data.entity.Product
+import com.tokopedia.filter.view.data.entity.SelectedFilter
 import com.tokopedia.filter.view.ui.filter_bottom_sheet.FilterBottomSheetFragmentListDialogFragment
 import com.tokopedia.filter.view.utils.Resource
 import com.tokopedia.filter.view.utils.ResourceState
@@ -21,6 +22,7 @@ class ProductActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var viewModel: ProductViewModel
     private val productAdapter: ProductAdapter = ProductAdapter()
     private var listProduct: List<Product> = emptyList()
+    private var selectedFilter: SelectedFilter? = null
 
     private val filterBottomSheet by lazy {
         FilterBottomSheetFragmentListDialogFragment(listProduct)
@@ -50,7 +52,7 @@ class ProductActivity : AppCompatActivity(), View.OnClickListener {
             ResourceState.SUCCESS -> {
                 swipe_refresh_layout.isRefreshing = false
                 result.data.let {
-                    productAdapter.setProduct(it)
+                    productAdapter.setProduct(loadFiltered(it ?: emptyList()))
                     listProduct = it ?: emptyList()
                 }
             }
@@ -83,12 +85,32 @@ class ProductActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         when(v?.id) {
-            R.id.fab_filter -> filterBottomSheet.show(supportFragmentManager, filterBottomSheet.tag)
+            R.id.fab_filter -> {
+                filterBottomSheet.selectedFilter = selectedFilter
+                filterBottomSheet.show(supportFragmentManager, filterBottomSheet.tag)
+            }
         }
     }
 
-    fun loadFiltered(text: String) {
-//        listProduct.fil
-        println("testui!"+text)
+    private fun loadFiltered(products: List<Product>): List<Product> {
+        if (selectedFilter != null) {
+            val filteredByCity =
+                if (selectedFilter!!.location != null) {
+                    listProduct.filter { selectedFilter!!.location!!.cities.contains(it.shop.city) }
+                } else {
+                    listProduct
+                }
+
+            return filteredByCity.filter {
+                it.priceInt >= selectedFilter!!.price.min && it.priceInt <= selectedFilter!!.price.max
+            }
+        } else {
+            return products
+        }
+    }
+
+    fun setFilter(selectedFilter: SelectedFilter) {
+        this.selectedFilter = selectedFilter
+        viewModel.getProduct()
     }
 }

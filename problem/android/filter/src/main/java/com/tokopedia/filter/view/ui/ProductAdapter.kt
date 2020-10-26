@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.tokopedia.filter.R
-import com.tokopedia.filter.view.ui.entity.Product
+import com.tokopedia.filter.view.data.entity.Product
 import com.tokopedia.filter.view.utils.StringUtils
 import kotlinx.android.synthetic.main.product_item.view.*
 import java.util.*
@@ -19,6 +19,7 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() 
         if (products == null) return
         this.listProduct.clear()
         this.listProduct.addAll(products)
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductAdapter.ProductViewHolder {

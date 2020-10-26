@@ -1,4 +1,4 @@
-package com.tokopedia.filter.view.ui.entity
+package com.tokopedia.filter.view.data.entity
 
 data class Product(
     var id: Int,

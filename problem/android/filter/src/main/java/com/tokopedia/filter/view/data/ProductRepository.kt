@@ -1,8 +1,8 @@
 package com.tokopedia.filter.view.data
 
-import com.tokopedia.filter.view.ui.entity.Product
+import com.tokopedia.filter.view.data.entity.Product
 import com.tokopedia.filter.view.data.response.ProductResponse
-import com.tokopedia.filter.view.ui.entity.Shop
+import com.tokopedia.filter.view.data.entity.Shop
 
 class ProductRepository private constructor(private val remoteDataSource: RemoteDataSource) : ProductDataSource {
     companion object {

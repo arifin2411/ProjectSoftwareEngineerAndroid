@@ -5,23 +5,22 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.filter.R
-import com.tokopedia.filter.view.ui.entity.Filter
+import com.tokopedia.filter.view.data.entity.LocationFilter
 import kotlinx.android.synthetic.main.sort_item.view.*
-import java.util.ArrayList
 
 class SortAdapter : RecyclerView.Adapter<SortAdapter.SortViewHolder>() {
 
-    private var listProductLocation = ArrayList<Filter>()
-    private var recyclerView: RecyclerView? = null
+    private var listProductLocation = ArrayList<LocationFilter>()
 
-    fun setRecyclerView(recyclerView: RecyclerView?) {
-        this.recyclerView = recyclerView
-    }
-
-    fun setProductLocation(products: List<Filter>?) {
+    fun setProductLocation(products: List<LocationFilter>?) {
         if (products == null) return
         this.listProductLocation.clear()
         this.listProductLocation.addAll(products)
+        notifyDataSetChanged()
+    }
+
+    fun getProductLocation(): ArrayList<LocationFilter> {
+        return listProductLocation
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SortAdapter.SortViewHolder {
@@ -39,11 +38,20 @@ class SortAdapter : RecyclerView.Adapter<SortAdapter.SortViewHolder>() {
     }
 
     inner class SortViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        fun bind(filter: Filter) {
+        fun bind(filter: LocationFilter) {
             with(itemView) {
-                tv_sort_title.text = filter.name
-                setOnClickListener {
+                tv_sort_title.text = filter.getName()
+                if (filter.isSelected) {
                     itemView.cv_sort_title?.setBackgroundResource(R.drawable.bg_choice_chips)
+                } else {
+                    itemView.cv_sort_title?.setBackgroundResource(R.drawable.ic_broken_image_black)
+                }
+                setOnClickListener {
+                    listProductLocation = listProductLocation.map {
+                        val selected = if (filter.id == it.id) !it.isSelected else false
+                        it.copy(isSelected = selected)
+                    }.toCollection(ArrayList())
+                    notifyDataSetChanged()
                 }
             }
         }

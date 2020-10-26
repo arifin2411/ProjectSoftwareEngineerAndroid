@@ -1,7 +1,6 @@
 package com.tokopedia.filter.view.data
 
-import androidx.lifecycle.LiveData
-import com.tokopedia.filter.view.ui.entity.Product
+import com.tokopedia.filter.view.data.entity.Product
 
 interface ProductDataSource {
 
