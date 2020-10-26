@@ -28,6 +28,4 @@ class ProductViewModel(
 
         return productLiveData
     }
-
-
 }
