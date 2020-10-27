@@ -26,8 +26,4 @@
     <style name="PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
     <style name="AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
-    <style name="test">
-        <item name="android:textSize">@dimen/sp_14</item>
-<!--        <item name="android:textColor">@</item>-->
-    </style>
 </resources>

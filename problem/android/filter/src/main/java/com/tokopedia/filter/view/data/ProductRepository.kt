@@ -10,9 +10,9 @@ class ProductRepository private constructor(private val remoteDataSource: Remote
         private var instance: ProductRepository? = null
 
         fun getInstance(remoteData: RemoteDataSource): ProductRepository =
-                instance ?: synchronized(this) {
-                    instance ?: ProductRepository(remoteData)
-                }
+            instance ?: synchronized(this) {
+                instance ?: ProductRepository(remoteData)
+            }
     }
 
     override fun getProduct(): List<Product> {

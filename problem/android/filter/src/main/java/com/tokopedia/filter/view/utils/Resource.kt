@@ -17,8 +17,8 @@ sealed class ResourceState {
 fun <T> MutableLiveData<Resource<T>>.setSuccess(data: T): MutableLiveData<Resource<T>> {
     postValue(
         Resource(
-                ResourceState.SUCCESS,
-                data
+            ResourceState.SUCCESS,
+            data
         )
     )
     return this
@@ -26,25 +26,15 @@ fun <T> MutableLiveData<Resource<T>>.setSuccess(data: T): MutableLiveData<Resour
 
 
 fun <T> MutableLiveData<Resource<T>>.setLoading() =
-        postValue(
-
-                Resource(ResourceState.LOADING)
-
-        )
-
-fun <T> MutableLiveData<Resource<T>>.setSuccess() =
-        postValue(
-                Resource(
-                        ResourceState.SUCCESS,
-                        null
-                )
-        )
+    postValue(
+        Resource(ResourceState.LOADING)
+    )
 
 fun <T> MutableLiveData<Resource<T>>.setError(throwable: Throwable? = null) =
-        postValue(
-                Resource(
-                        ResourceState.ERROR,
-                        value?.data,
-                        throwable
-                )
+    postValue(
+        Resource(
+                ResourceState.ERROR,
+                value?.data,
+                throwable
         )
+    )

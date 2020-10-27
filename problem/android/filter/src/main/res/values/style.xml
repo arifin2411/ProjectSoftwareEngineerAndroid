@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="FormButton" parent="Theme.MaterialComponents">
-        <item name="colorOnPrimary">@android:color/holo_red_light</item>
+        <item name="colorOnPrimary">@color/colorPrimary</item>
         <item name="colorPrimary">@color/colorLime</item>
         <item name="colorOnSurface">@color/colorLime</item>
+        <item name="backgroundTint">@color/colorWhite</item>
     </style>
 </resources>

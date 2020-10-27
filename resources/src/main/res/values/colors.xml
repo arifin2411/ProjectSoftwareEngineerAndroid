@@ -10,4 +10,5 @@
     <color name="colorLime">#32CD32</color>
     <color name="colorPaleGreen">#67c082</color>
     <color name="colorAquamarine">#7FFFD4</color>
+    <color name="colorGrey">#D3D3D3</color>
 </resources>

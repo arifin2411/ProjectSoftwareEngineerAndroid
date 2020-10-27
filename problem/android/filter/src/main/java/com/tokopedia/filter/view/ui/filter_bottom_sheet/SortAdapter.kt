@@ -42,9 +42,9 @@ class SortAdapter : RecyclerView.Adapter<SortAdapter.SortViewHolder>() {
             with(itemView) {
                 tv_sort_title.text = filter.getName()
                 if (filter.isSelected) {
-                    itemView.cv_sort_title?.setBackgroundResource(R.drawable.bg_choice_chips)
+                    itemView.cv_sort_title?.setBackgroundResource(R.drawable.bg_choice_chips_green)
                 } else {
-                    itemView.cv_sort_title?.setBackgroundResource(R.drawable.ic_broken_image_black)
+                    itemView.cv_sort_title?.setBackgroundResource(R.drawable.bg_choise_chips_grey)
                 }
                 setOnClickListener {
                     listProductLocation = listProductLocation.map {
