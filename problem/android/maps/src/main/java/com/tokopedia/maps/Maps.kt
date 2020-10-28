@@ -4,11 +4,11 @@ import com.google.gson.annotations.SerializedName
 
 data class Maps(
     @SerializedName("name")
-    var name: String? = null,
+    var name: String? = "",
     @SerializedName("capital")
-    var capital: String? = null,
+    var capital: String? = "",
     @SerializedName("population")
-    var population: String? = null,
+    var population: String? = "",
     @SerializedName("callingCodes")
     var callingCodes: List<String>? = null,
     @SerializedName("latlng")

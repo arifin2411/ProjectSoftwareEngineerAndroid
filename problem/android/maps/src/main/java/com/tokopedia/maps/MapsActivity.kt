@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -31,16 +32,15 @@ open class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private var maps: Maps = Maps()
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
         bindViews()
         initListeners()
         loadMap()
-//        val mapFragment = supportFragmentManager
+//         mapFragment = supportFragmentManager
 //                .findFragmentById(R.id.map) as SupportMapFragment
-//        mapFragment.getMapAsync(this)
+//        mapFragment!!.getMapAsync(this)
     }
 
     override fun onResume() {
@@ -73,14 +73,23 @@ open class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val service: MapsApi = apiClient.getRetrofitInstance()!!.create(MapsApi::class.java)
         val call: Call<List<Maps>> = service.getDataCountry(country)
         call.enqueue(object : Callback<List<Maps>> {
-            override fun onFailure(call: Call<List<Maps>>, t: Throwable) {
-            }
+            override fun onFailure(call: Call<List<Maps>>, t: Throwable) {}
 
             override fun onResponse(call: Call<List<Maps>>, response: Response<List<Maps>>) {
-                maps = if (!response.body().isNullOrEmpty()) {
-                    response.body()!![0]
+                if (!response.body().isNullOrEmpty()) {
+                    maps = response.body()!![0]
+                    editText?.setText("")
+                    googleMap?.clear()
+                    googleMap?.addMarker(MarkerOptions()
+                        .position(LatLng(maps.latlng?.get(0)?.toDouble() ?: 0.0, maps.latlng?.get(1)?.toDouble() ?: 0.0))
+                        .title(maps.name))
+
+                    googleMap?.moveCamera(
+                        CameraUpdateFactory.newLatLng(
+                            LatLng(maps.latlng!![0].toDouble(), maps.latlng!![1].toDouble())))
                 } else {
-                    Maps()
+                    maps = Maps()
+                    Toast.makeText(applicationContext,"Not Found",Toast.LENGTH_SHORT).show()
                 }
                 show()
             }
@@ -94,22 +103,11 @@ open class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         txtCountryCallCode.text = ("Kode telepon: "+ maps.callingCodes?.get(0))
     }
 
-
     fun loadMap() {
         mapFragment!!.getMapAsync { googleMap -> this@MapsActivity.googleMap = googleMap }
     }
 
     override fun onMapReady(p0: GoogleMap?) {
-        println("testui")
         googleMap = p0
-
-        val sydney = LatLng(-34.0, 151.0)
-        googleMap?.addMarker(
-            MarkerOptions()
-//                .position(LatLng(maps.latlng!![0].toDouble(), maps.latlng!![1].toDouble()))
-                    .position(sydney)
-                .title("Marker in ")
-        )
-        googleMap?.moveCamera(CameraUpdateFactory.newLatLng(sydney))
     }
 }
