@@ -1,6 +1,5 @@
 package com.tokopedia.filter.view.data.entity
 
-
 data class LocationFilter(
     var id: Int,
     var cities: List<String>,
@@ -9,6 +8,8 @@ data class LocationFilter(
     fun getName(): String {
         return if (cities.size == 1) {
             cities.first()
+        } else if (cities.isEmpty()) {
+            ""
         } else "Others"
     }
 }

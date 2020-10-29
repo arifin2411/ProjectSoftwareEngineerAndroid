@@ -33,8 +33,8 @@ fun <T> MutableLiveData<Resource<T>>.setLoading() =
 fun <T> MutableLiveData<Resource<T>>.setError(throwable: Throwable? = null) =
     postValue(
         Resource(
-                ResourceState.ERROR,
-                value?.data,
-                throwable
+            ResourceState.ERROR,
+            value?.data,
+            throwable
         )
     )

@@ -103,7 +103,7 @@ open class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         txtCountryCallCode.text = ("Kode telepon: "+ maps.callingCodes?.get(0))
     }
 
-    fun loadMap() {
+    private fun loadMap() {
         mapFragment!!.getMapAsync { googleMap -> this@MapsActivity.googleMap = googleMap }
     }
 

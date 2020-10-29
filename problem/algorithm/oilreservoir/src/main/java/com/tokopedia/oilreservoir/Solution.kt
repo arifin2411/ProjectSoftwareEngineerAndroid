@@ -4,13 +4,13 @@ package com.tokopedia.oilreservoir
  * Created by fwidjaja on 2019-09-24.
  */
 object Solution {
-    lateinit var height:IntArray
+    private lateinit var height:IntArray
 
-    var oilCube: Int = 0
-    var leftPosition: Int = 0
-    var leftWall: Int = 0
-    var bool: Int = 0
-    var rightPosition: Int = 0
+    private var oilCube: Int = 0
+    private var leftPosition: Int = 0
+    private var leftWall: Int = 0
+    private var bool: Int = 0
+    private var rightPosition: Int = 0
 
     fun collectOil(height: IntArray): Int {
         // TODO, return the amount of oil blocks that could be collected

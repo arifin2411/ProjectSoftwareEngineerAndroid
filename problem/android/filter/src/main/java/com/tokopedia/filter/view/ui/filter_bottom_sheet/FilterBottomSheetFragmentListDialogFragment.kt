@@ -71,9 +71,13 @@ class FilterBottomSheetFragmentListDialogFragment(
         cityWithSizesSorted = cityWithSizes.toList().sortedBy { it.second }.reversed().toMap()
 
         val filter = ArrayList<LocationFilter>()
-        filter.add(LocationFilter(1, listOf(cityWithSizesSorted.keys.elementAt(0)), false))
-        filter.add(LocationFilter(2, listOf(cityWithSizesSorted.keys.elementAt(1)), false))
-        filter.add(LocationFilter(3, cityWithSizesSorted.keys.drop(2), false))
+        val shownLocation = 2
+        filter.addAll(
+            cityWithSizesSorted.keys.take(shownLocation).mapIndexed { index, s ->
+                LocationFilter(index + 1, listOf(s), false)
+            }
+        )
+        filter.add(LocationFilter(3, cityWithSizesSorted.keys.drop(shownLocation), false))
 
         val updatedFilter =
             filter.map {
@@ -84,7 +88,6 @@ class FilterBottomSheetFragmentListDialogFragment(
                     it.copy(isSelected = false)
                 }
             }
-        println("testui"+updatedFilter.map { it.getName() +"#"+it.isSelected })
 
         sortAdapter.setProductLocation(updatedFilter)
 

@@ -1,8 +1,6 @@
 package com.tokopedia.filter.view.data.response
 
-import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
 
 data class ProductResponse(
     @SerializedName("data")

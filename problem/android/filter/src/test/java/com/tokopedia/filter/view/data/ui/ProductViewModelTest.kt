@@ -5,17 +5,17 @@ import com.tokopedia.filter.view.data.ProductDataSource
 import com.tokopedia.filter.view.data.entity.Product
 import com.tokopedia.filter.view.data.entity.Shop
 import com.tokopedia.filter.view.ui.ProductViewModel
-import com.tokopedia.filter.view.utils.Resource
-import com.tokopedia.filter.view.utils.ResourceState
-import com.tokopedia.filter.view.utils.setSuccess
+import com.tokopedia.filter.view.utils.*
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers
 import org.mockito.Mock
 import org.mockito.Mockito
-import org.mockito.Mockito.verify
+import org.mockito.Mockito.*
 import org.mockito.junit.MockitoJUnitRunner
+import java.lang.Exception
 
 @RunWith(MockitoJUnitRunner::class)
 class ProductViewModelTest {
@@ -31,9 +31,9 @@ class ProductViewModelTest {
     fun setUp() {
         viewModel = ProductViewModel(productRepository, mutable)
     }
-    @Test
-    fun getProduct() {
 
+    @Test
+    fun getProductSuccess() {
         Mockito.`when`<List<Product>>(
             productRepository.getProduct())
             .thenReturn(
@@ -47,7 +47,7 @@ class ProductViewModelTest {
                     10,
                     shop = Shop(1,
                         "test show",
-                    "test city"))
+                        "test city"))
                 )
             )
 
@@ -62,9 +62,9 @@ class ProductViewModelTest {
                         10,
                         10,
                         shop = Shop(
-                                1,
-                                "test show",
-                                "test city"
+                            1,
+                            "test show",
+                            "test city"
                         )
                     )
                 )
@@ -84,9 +84,10 @@ class ProductViewModelTest {
                 10,
                 10,
                 shop = Shop(1,
-                        "test show",
-                        "test city"))
+                    "test show",
+                    "test city"))
         ))
+        verify(mutable).setLoading()
 
         Assert.assertNotNull(products)
         Assert.assertEquals(
@@ -101,13 +102,24 @@ class ProductViewModelTest {
                         10,
                         10,
                         shop = Shop(
-                                1,
-                                "test show",
-                                "test city"
+                            1,
+                            "test show",
+                            "test city"
                         )
                     )
                 )
             ),
             products.value)
+    }
+
+    @Test
+    fun getProductFailed() {
+        Mockito.`when`<List<Product>>(
+            productRepository.getProduct()).then { throw Exception("Error") }
+        viewModel.getProduct()
+
+        verify(mutable).setLoading()
+        verify(mutable, times(1)).setError()
+        verify(mutable, never()).setSuccess(ArgumentMatchers.anyList())
     }
 }
