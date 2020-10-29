@@ -4,5 +4,6 @@ import com.tokopedia.filter.view.data.entity.Product
 
 interface ProductDataSource {
 
-    fun getProduct(): List<Product>
+    fun getAllProduct(): List<Product>
+    fun getProduct(cities: List<String>?, priceMin: Int?, priceMax:Int?,page: Int): List<Product>
 }

@@ -6,23 +6,32 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.Toast
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.filter.R
 import com.tokopedia.filter.view.ui.ProductActivity
 import com.tokopedia.filter.view.data.entity.*
+import com.tokopedia.filter.view.ui.ProductViewModel
+import com.tokopedia.filter.view.utils.Resource
+import com.tokopedia.filter.view.utils.ResourceState
 import com.tokopedia.filter.view.utils.StringUtils
+import com.tokopedia.filter.view.viewmodel.ViewModelFactory
+import kotlinx.android.synthetic.main.activity_product.*
 import kotlinx.android.synthetic.main.fragment_setting_bottom_sheet_list_dialog_list_dialog.*
 import java.text.NumberFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-class FilterBottomSheetFragmentListDialogFragment(
-    private val products: List<Product> ) :
+class FilterBottomSheetFragmentListDialogFragment() :
         BottomSheetDialogFragment(),
         View.OnClickListener {
 
+    private lateinit var viewModel: ProductViewModel
+    private var products: List<Product> = emptyList()
     private val sortAdapter = SortAdapter()
     private var cityWithSizesSorted: Map<String, Int> = emptyMap()
     var selectedFilter: SelectedFilter? = null
@@ -32,6 +41,9 @@ class FilterBottomSheetFragmentListDialogFragment(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        viewModel = ViewModelProvider(this,
+                ViewModelFactory.getInstance(activity!!))[ProductViewModel::class.java]
+        viewModel.getAllProduct().observe(this, Observer(::handleLoadData))
         return inflater.inflate(R.layout.fragment_setting_bottom_sheet_list_dialog_list_dialog, container, false)
     }
 
@@ -56,14 +68,27 @@ class FilterBottomSheetFragmentListDialogFragment(
                 })
             }
         }
-        initView()
+        btn_filter.setOnClickListener(this)
     }
 
-    private fun initView() {
-        btn_filter.setOnClickListener(this)
+    private fun handleLoadData(result: Resource<List<Product>>) {
+        when (result.state) {
+            ResourceState.LOADING -> {
 
-        filterLocation()
-        filterPrice()
+            }
+            ResourceState.SUCCESS -> {
+                result.data.let {
+                    if (it != null) {
+                        products = it
+                        filterLocation()
+                        filterPrice()
+                    }
+                }
+            }
+            ResourceState.ERROR -> {
+                Toast.makeText(activity," ${result.throwable}", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun filterLocation() {
@@ -99,12 +124,18 @@ class FilterBottomSheetFragmentListDialogFragment(
     }
 
     private fun filterPrice() {
-        tv_price_min.text = StringUtils.getRpCurrency(products.minBy { it.priceInt }?.priceInt?.toLong()?: 0.toLong())
-        tv_price_max.text = StringUtils.getRpCurrency(products.maxBy { it.priceInt }?.priceInt?.toLong()?: 0.toLong())
-
         rs_price.valueFrom = products.minBy { it.priceInt }?.priceInt?.toFloat()?: 0.toFloat()
         rs_price.valueTo = products.maxBy { it.priceInt }?.priceInt?.toFloat() ?: 0.toFloat()
-        rs_price.values = listOf(rs_price.valueFrom, rs_price.valueTo)
+
+        rs_price.values = if (selectedFilter != null) {
+                listOf(selectedFilter!!.price.min, selectedFilter!!.price.max)
+            } else {
+                listOf(rs_price.valueFrom, rs_price.valueTo)
+            }
+
+        tv_price_min.text = StringUtils.getRpCurrency(rs_price.values[0].toLong())
+        tv_price_max.text = StringUtils.getRpCurrency(rs_price.values[1].toLong())
+
         rs_price.setLabelFormatter { value: Float ->
             val format = NumberFormat.getCurrencyInstance()
             format.maximumFractionDigits = 0

@@ -12,8 +12,12 @@ class RemoteDataSourceImpl private constructor(override val jsonHelper: JsonHelp
             }
     }
 
-    override fun getAllProduct(callback: RemoteDataSource.LoadCoursesCallback) {
-        callback.onAllProductReceived(jsonHelper.loadDataDummy())
+    override fun getAllProduct(callback: RemoteDataSource.LoadCallback) {
+        callback.onAllProductReceived(jsonHelper.loadAllDataDummy())
+    }
+
+    override fun getProduct(cities: List<String>?, priceMin: Int?, priceMax:Int?, page: Int, callback: RemoteDataSource.LoadCallback) {
+        callback.onAllProductReceived(jsonHelper.loadDataDummy(cities, priceMin, priceMax, page))
     }
 
 }

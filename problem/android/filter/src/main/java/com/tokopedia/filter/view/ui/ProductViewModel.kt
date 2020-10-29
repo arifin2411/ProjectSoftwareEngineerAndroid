@@ -12,14 +12,15 @@ import com.tokopedia.filter.view.utils.setSuccess
 
 class ProductViewModel(
     private val productRepository: ProductDataSource,
-    val productLiveData: MutableLiveData<Resource<List<Product>>> = MutableLiveData<Resource<List<Product>>>()
+    val productLiveData: MutableLiveData<Resource<List<Product>>> = MutableLiveData<Resource<List<Product>>>(),
+    val allProductLiveData: MutableLiveData<Resource<List<Product>>> = MutableLiveData<Resource<List<Product>>>()
 ) : ViewModel() {
 
-    fun getProduct(): LiveData<Resource<List<Product>>> {
+    fun getProduct(cities: List<String>?, priceMin: Int?, priceMax:Int?, page: Int): LiveData<Resource<List<Product>>> {
         productLiveData.setLoading()
 
         try {
-            val products = productRepository.getProduct()
+            val products = productRepository.getProduct(cities, priceMin, priceMax, page)
             productLiveData.setSuccess(products)
         } catch (ex: Exception) {
             productLiveData.setError(ex)
@@ -27,4 +28,19 @@ class ProductViewModel(
 
         return productLiveData
     }
+
+    fun getAllProduct(): LiveData<Resource<List<Product>>> {
+        allProductLiveData.setLoading()
+
+        try {
+            val products = productRepository.getAllProduct()
+            allProductLiveData.setSuccess(products)
+        } catch (ex: Exception) {
+            allProductLiveData.setError(ex)
+        }
+
+        return allProductLiveData
+    }
+
+
 }

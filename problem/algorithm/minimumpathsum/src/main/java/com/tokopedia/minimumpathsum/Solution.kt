@@ -1,6 +1,5 @@
 package com.tokopedia.minimumpathsum
 
-import java.util.ArrayList
 import kotlin.math.min
 
 object Solution {

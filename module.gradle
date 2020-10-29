@@ -16,8 +16,6 @@ android {
         if (file("../secure.properties").exists()) {
             file("../secure.properties")?.withInputStream { secureProps.load(it) }
         }
-        resValue "string", "maps_api_key", (secureProps.getProperty("MAPS_API_KEY") ?: "")
-
     }
 }
 
@@ -44,7 +42,18 @@ dependencies {
     kapt 'com.github.bumptech.glide:compiler:4.8.0'
     testImplementation 'junit:junit:4.12'
     testImplementation "io.mockk:mockk:1.9"
-    androidTestImplementation 'org.robolectric:robolectric:4.3.1'
+    androidTestImplementation ("org.robolectric:robolectric:4.3.1"){
+        exclude group: 'org.apache.maven', module: 'maven-artifact'
+        exclude group: 'org.apache.maven', module: 'maven-artifact-manager'
+        exclude group: 'org.apache.maven', module: 'maven-model'
+        exclude group: 'org.apache.maven', module: 'maven-plugin-registry'
+        exclude group: 'org.apache.maven', module: 'maven-profile'
+        exclude group: 'org.apache.maven', module: 'maven-project'
+        exclude group: 'org.apache.maven', module: 'maven-settings'
+        exclude group: 'org.apache.maven', module: 'maven-error-diagnostics'
+        exclude group: 'org.apache.maven', module: 'maven-ant-tasks'
+        exclude group: "org.apache.maven.wagon"
+    }
     testImplementation "androidx.arch.core:core-testing:2.1.0"
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'

@@ -12,20 +12,24 @@ import com.tokopedia.filter.R
 import com.tokopedia.filter.view.data.entity.Product
 import com.tokopedia.filter.view.data.entity.SelectedFilter
 import com.tokopedia.filter.view.ui.filter_bottom_sheet.FilterBottomSheetFragmentListDialogFragment
+import com.tokopedia.filter.view.utils.EndlessOnScrollListener
 import com.tokopedia.filter.view.utils.Resource
 import com.tokopedia.filter.view.utils.ResourceState
+import com.tokopedia.filter.view.utils.ext.hide
+import com.tokopedia.filter.view.utils.ext.show
 import com.tokopedia.filter.view.viewmodel.ViewModelFactory
 import kotlinx.android.synthetic.main.activity_product.*
+import kotlinx.android.synthetic.main.product_load_more.*
 
 class ProductActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var viewModel: ProductViewModel
     private val productAdapter: ProductAdapter = ProductAdapter()
-    private var listProduct: List<Product> = emptyList()
     private var selectedFilter: SelectedFilter? = null
+    private var PAGE: Int = 1
 
     private val filterBottomSheet by lazy {
-        FilterBottomSheetFragmentListDialogFragment(listProduct)
+        FilterBottomSheetFragmentListDialogFragment()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,12 +39,33 @@ class ProductActivity : AppCompatActivity(), View.OnClickListener {
 
         viewModel = ViewModelProvider(this,
                 ViewModelFactory.getInstance(this))[ProductViewModel::class.java]
-        viewModel.getProduct().observe(this, Observer(::handleLoadData))
+        viewModel.getProduct(
+            selectedFilter?.location?.cities,
+            selectedFilter?.price?.min?.toInt(),
+            selectedFilter?.price?.max?.toInt(),
+            PAGE
+        ).observe(this, Observer(::handleLoadData))
+        PAGE += 1
 
         with(product_list) {
             layoutManager = GridLayoutManager(context, 2, RecyclerView.VERTICAL, false)
             setHasFixedSize(true)
             adapter = productAdapter
+        }
+
+        product_list.addOnScrollListener(scrollData(PAGE)!!)
+    }
+
+    private fun scrollData(page: Int?): EndlessOnScrollListener? {
+        return object : EndlessOnScrollListener() {
+            override fun onLoadMore() {
+                viewModel.getProduct(
+                    selectedFilter?.location?.cities,
+                    selectedFilter?.price?.min?.toInt(),
+                    selectedFilter?.price?.max?.toInt(),
+                    PAGE ?: 1)
+                PAGE += 1
+            }
         }
     }
 
@@ -48,15 +73,18 @@ class ProductActivity : AppCompatActivity(), View.OnClickListener {
         when (result.state) {
             ResourceState.LOADING -> {
                 swipe_refresh_layout.isRefreshing = true
+                load_more_indicator.show()
             }
             ResourceState.SUCCESS -> {
                 swipe_refresh_layout.isRefreshing = false
+                load_more_indicator.hide()
                 result.data.let {
-                    productAdapter.setProduct(loadFiltered(it ?: emptyList()))
-                    listProduct = it ?: emptyList()
+                    productAdapter.appendProduct(it ?: emptyList())
                 }
             }
             ResourceState.ERROR -> {
+                swipe_refresh_layout.isRefreshing = false
+                load_more_indicator.hide()
                 Toast.makeText(this," ${result.throwable}", Toast.LENGTH_SHORT).show()
             }
         }
@@ -78,7 +106,7 @@ class ProductActivity : AppCompatActivity(), View.OnClickListener {
             )
 
             setOnRefreshListener {
-                viewModel.getProduct()
+                refreshData()
             }
         }
     }
@@ -92,25 +120,31 @@ class ProductActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    private fun loadFiltered(products: List<Product>): List<Product> {
-        if (selectedFilter != null) {
-            val filteredByCity =
-                if (selectedFilter!!.location != null) {
-                    listProduct.filter { selectedFilter!!.location!!.cities.contains(it.shop.city) }
-                } else {
-                    listProduct
-                }
-
-            return filteredByCity.filter {
-                it.priceInt >= selectedFilter!!.price.min && it.priceInt <= selectedFilter!!.price.max
-            }
-        } else {
-            return products
-        }
-    }
-
     fun setFilter(selectedFilter: SelectedFilter) {
         this.selectedFilter = selectedFilter
-        viewModel.getProduct()
+        productAdapter.clearData()
+        viewModel.getProduct(
+            selectedFilter.location?.cities,
+            selectedFilter.price.min.toInt(),
+            selectedFilter.price.max.toInt(),
+            1
+        )
+        PAGE = 2
+
+        product_list.clearOnScrollListeners()
+        product_list.addOnScrollListener(scrollData(PAGE)!!)
+    }
+
+    private fun refreshData() {
+        productAdapter.clearData()
+        viewModel.getProduct(
+            selectedFilter?.location?.cities,
+            selectedFilter?.price?.min?.toInt(),
+            selectedFilter?.price?.max?.toInt(),
+            1
+        )
+        PAGE = 2
+        product_list.clearOnScrollListeners()
+        product_list.addOnScrollListener(scrollData(PAGE)!!)
     }
 }

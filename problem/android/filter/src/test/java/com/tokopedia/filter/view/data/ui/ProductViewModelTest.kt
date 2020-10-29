@@ -27,6 +27,19 @@ class ProductViewModelTest {
     @Mock
     private lateinit var mutable: MutableLiveData<Resource<List<Product>>>
 
+    val dataDummy =  listOf(
+        Product(
+            1,
+            "Samsung",
+            "www",
+            1000,
+            10,
+            10,
+            shop = Shop(1,
+                    "test show",
+                    "test city"))
+    )
+
     @Before
     fun setUp() {
         viewModel = ProductViewModel(productRepository, mutable)
@@ -35,79 +48,25 @@ class ProductViewModelTest {
     @Test
     fun getProductSuccess() {
         Mockito.`when`<List<Product>>(
-            productRepository.getProduct())
-            .thenReturn(
-                listOf(
-                    Product(
-                        1,
-                        "Samsung",
-                        "www",
-                    1000,
-                    10,
-                    10,
-                    shop = Shop(1,
-                        "test show",
-                        "test city"))
-                )
-            )
+            productRepository.getProduct(anyList(), anyInt(), anyInt(), anyInt()))
+            .thenReturn(dataDummy)
 
         Mockito.`when`(
-            mutable.setSuccess(
-                listOf(
-                    Product(
-                        1,
-                        "Samsung",
-                        "www",
-                        1000,
-                        10,
-                        10,
-                        shop = Shop(
-                            1,
-                            "test show",
-                            "test city"
-                        )
-                    )
-                )
-            )
+            mutable.setSuccess(dataDummy)
         ).thenAnswer{
             Mockito.`when`(mutable.value).thenReturn(it.getArgument(0))
             Unit
         }
-        val products = viewModel.getProduct()
-        verify<ProductDataSource>(productRepository).getProduct()
-        verify(mutable).setSuccess(listOf(
-            Product(
-                1,
-                "Samsung",
-                "www",
-                1000,
-                10,
-                10,
-                shop = Shop(1,
-                    "test show",
-                    "test city"))
-        ))
+        val products = viewModel.getProduct(listOf("jakarta"), 1000, 1000, 1)
+        verify<ProductDataSource>(productRepository).getProduct(anyList(), anyInt(), anyInt(), anyInt())
+        verify(mutable).setSuccess(dataDummy)
         verify(mutable).setLoading()
 
         Assert.assertNotNull(products)
         Assert.assertEquals(
             Resource(
                 ResourceState.SUCCESS,
-                listOf(
-                    Product(
-                        1,
-                        "Samsung",
-                        "www",
-                        1000,
-                        10,
-                        10,
-                        shop = Shop(
-                            1,
-                            "test show",
-                            "test city"
-                        )
-                    )
-                )
+                dataDummy
             ),
             products.value)
     }
@@ -115,8 +74,45 @@ class ProductViewModelTest {
     @Test
     fun getProductFailed() {
         Mockito.`when`<List<Product>>(
-            productRepository.getProduct()).then { throw Exception("Error") }
-        viewModel.getProduct()
+                productRepository.getProduct(anyList(), anyInt(), anyInt(), anyInt())).then { throw Exception("Error") }
+        viewModel.getProduct(listOf("jakarta"), 1000, 1000, 1)
+
+        verify(mutable).setLoading()
+        verify(mutable, times(1)).setError()
+        verify(mutable, never()).setSuccess(ArgumentMatchers.anyList())
+    }
+
+    @Test
+    fun getAllProductSuccess() {
+        Mockito.`when`<List<Product>>(
+            productRepository.getAllProduct())
+            .thenReturn(dataDummy)
+
+        Mockito.`when`(
+            mutable.setSuccess(dataDummy)
+        ).thenAnswer{
+            Mockito.`when`(mutable.value).thenReturn(it.getArgument(0))
+            Unit
+        }
+        val products = viewModel.getAllProduct()
+        verify<ProductDataSource>(productRepository).getAllProduct()
+        verify(mutable).setSuccess(dataDummy)
+        verify(mutable).setLoading()
+
+        Assert.assertNotNull(products)
+        Assert.assertEquals(
+            Resource(
+                ResourceState.SUCCESS,
+                dataDummy
+            ),
+            products.value)
+    }
+
+    @Test
+    fun getAllProductFailed() {
+        Mockito.`when`<List<Product>>(
+            productRepository.getAllProduct()).then { throw Exception("Error") }
+        viewModel.getAllProduct()
 
         verify(mutable).setLoading()
         verify(mutable, times(1)).setError()

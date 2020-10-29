@@ -7,9 +7,10 @@ interface RemoteDataSource {
 
     val jsonHelper: JsonHelper
 
-    fun getAllProduct(callback: LoadCoursesCallback)
+    fun getProduct(cities: List<String>?, priceMin: Int?, priceMax:Int?, page: Int, callback: LoadCallback)
+    fun getAllProduct(callback: LoadCallback)
 
-    interface LoadCoursesCallback {
+    interface LoadCallback {
         fun onAllProductReceived(productResponses: ProductResponse)
     }
 }

@@ -11,8 +11,7 @@
     <RelativeLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center">
+        android:layout_height="match_parent">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/product_list"
@@ -36,6 +35,14 @@
             android:layout_alignParentRight="true"
             app:fabSize="normal"
             app:rippleColor="@android:color/holo_green_dark"/>
+
+        <include
+            android:visibility="gone"
+            layout="@layout/product_load_more"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content" />
 
     </RelativeLayout>
 

@@ -22,6 +22,16 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() 
         notifyDataSetChanged()
     }
 
+    fun clearData() {
+       return listProduct.clear()
+    }
+
+    fun appendProduct(products: List<Product>?) {
+        if (products == null) return
+        listProduct.addAll(products)
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductAdapter.ProductViewHolder {
         val view =
             LayoutInflater.from(parent.context)
